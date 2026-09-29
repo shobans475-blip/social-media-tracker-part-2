@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENTINEL-AI | Social Media Intelligence & Analytics Platform</title>
+  <meta name="description" content="SIH Social Media Intelligence, NLP Sentiment, Demographics, Trends, and Link Analysis Graph Platform">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">
+        <h1>SENTINEL-AI</h1>
+        <p>Smart India Hackathon &bull; Social Intelligence Engine</p>
+      </div>
+    </div>
+
+    <!-- Platform Filter Bar -->
+    <div class="platform-filter-bar">
+      <button class="filter-btn active" data-platform="all">All Sources</button>
+      <button class="filter-btn" data-platform="twitter">X (Twitter)</button>
+      <button class="filter-btn" data-platform="telegram">Telegram</button>
+      <button class="filter-btn" data-platform="instagram">Instagram</button>
+      <button class="filter-btn" data-platform="youtube">YouTube</button>
+    </div>
+
+    <!-- Status & Event Injections -->
+    <div class="header-status">
+      <div class="status-badge" id="threat-status-badge">
+        <span class="status-pulse"></span>
+        STATUS: MONITORING
+      </div>
+
+      <button class="inject-btn" id="btn-inject-threat" title="Inject a simulated threat or phishing alert">
+        ⚠️ + Threat Event
+      </button>
+
+      <button class="inject-btn" id="btn-inject-viral" title="Inject a simulated positive viral tech post">
+        🚀 + Viral Event
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="dashboard-container">
+    
+    <!-- Top KPI Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card cyan">
+        <span class="kpi-title">Total Posts Ingested</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-total-posts">0</span>
+          <span class="kpi-delta positive">LIVE STREAM</span>
+        </div>
+      </div>
+
+      <div class="kpi-card rose">
+        <span class="kpi-title">Threat Signals & Alerts</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-threat-signals" style="color:#fb7185;">0</span>
+          <span class="kpi-delta negative">FLAGGED</span>
+        </div>
+      </div>
+
+      <div class="kpi-card purple">
+        <span class="kpi-title">Network Influence Nodes</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-network-nodes">0</span>
+          <span class="kpi-delta positive">NETWORKX</span>
+        </div>
+      </div>
+
+      <div class="kpi-card emerald">
+        <span class="kpi-title">Network Links / Reposts</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-network-edges">0</span>
+          <span class="kpi-delta positive">ACTIVE</span>
+        </div>
+      </div>
+
+      <div class="kpi-card amber">
+        <span class="kpi-title">Avg Polarity Index</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-avg-polarity">+0.00</span>
+          <span class="kpi-delta positive">NLP SCORE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Analytics & Feed Split View -->
+    <section class="main-layout">
+
+      <!-- Left Tabbed Intelligence Panel -->
+      <div class="tabs-container">
+        <nav class="tab-nav">
+          <button class="tab-item active" data-tab="tab-network">🕸️ Link Analysis & Influencer Graph</button>
+          <button class="tab-item" data-tab="tab-sentiment">📊 Sentiment & NLP Sandbox</button>
+          <button class="tab-item" data-tab="tab-demographics">👥 Demographics & Geo Clusters</button>
+          <button class="tab-item" data-tab="tab-trends">🔥 Trends & Topic Modeling</button>
+        </nav>
+
+        <!-- Tab 1: Network Graph -->
+        <div class="tab-content active" id="tab-network">
+          <div class="graph-wrapper">
+            <canvas id="network-canvas"></canvas>
+            
+            <div class="node-tooltip" id="node-tooltip"></div>
+
+            <div class="graph-legend">
+              <div style="font-weight:700; margin-bottom:4px; color:#fff;">Community Clusters:</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span> Tech & Policy Startups</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> Civic & Infrastructure</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6;"></span> Environmental & Eco</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span> Cyber Threat Channels</div>
+            </div>
+
+            <div class="graph-controls">
+              <button class="graph-btn" onclick="graphRenderer.zoomIn()" title="Zoom In">+</button>
+              <button class="graph-btn" onclick="graphRenderer.zoomOut()" title="Zoom Out">-</button>
+              <button class="graph-btn" onclick="graphRenderer.resetView()" title="Reset View">↺</button>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <h4 style="font-size:0.88rem; margin-bottom:8px; color:#fff;">⚡ Top Influence Leaders (PageRank Centrality)</h4>
+            <div id="influencer-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:10px;"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Sentiment & Sandbox -->
+        <div class="tab-content" id="tab-sentiment">
+          <div class="grid-2">
+            <div class="analytics-card">
+              <h4>Global Sentiment Distribution <span>NLP Model</span></h4>
+              <div style="height: 220px; position:relative;">
+                <canvas id="chart-sentiment"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <h4>Real-Time Threat Detection Log <span>Safety AI</span></h4>
+              <div style="font-size:0.8rem; color:#9ca3af; line-height:1.5;">
+                Scans for cyber fraud, phishing links, hate speech, and civic misinformation across channels.
+              </div>
+              <div id="threat-alerts-summary" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+                <div style="padding:8px 12px; background:rgba(244,63,94,0.1); border-left:3px solid #f43f5e; border-radius:4px; font-size:12px;">
+                  <strong style="color:#fb7185;">ALERT:</strong> High-risk Telegram loan fraud campaign with 40 APKs flagged.
+                </div>
+                <div style="padding:8px 12px; background:rgba(245,158,11,0.1); border-left:3px solid #f59e0b; border-radius:4px; font-size:12px;">
+                  <strong style="color:#fcd34d;">MISINFO:</strong> Unverified water supply shutdown rumors in Ahmedabad debunked.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive NLP Sandbox -->
+          <div style="margin-top:16px;">
+            <div class="nlp-sandbox">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="font-size:0.9rem; font-weight:700; color:#fff;">
+                  🧪 Live NLP Sandbox (Evaluate Any Social Post or Tweet)
+                </h4>
+                <span style="font-size:0.75rem; color:#38bdf8;">Multilingual &bull; Gemini 2.5 Flash Enabled</span>
+              </div>
+              <textarea 
+                id="sandbox-input" 
+                class="sandbox-textarea" 
+                placeholder="Type or paste any tweet, message or news post in English, Hindi (e.g. बहुत बढ़िया या फर्जी खबर), or Hinglish..."
+              >Heavy water logging reported near Velachery junction due to incessant rains. Helpline 1070 active. Stay safe! #ChennaiRains</textarea>
+              
+              <div class="sandbox-actions">
+                <button id="btn-analyze-sandbox" class="analyze-btn">
+                  Run Deep NLP & Threat Scan
+                </button>
+              </div>
+
+              <div id="sandbox-result" class="sandbox-result" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Demographics & Geo -->
+        <div class="tab-content" id="tab-demographics">
+          <div class="grid-2">
+            <div class="analytics-card">
+              <h4>Age Cohort Demographics <span>AI Inference</span></h4>
+              <div style="height: 220px;">
+                <canvas id="chart-age"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <h4>Top Regional Hubs <span>Geo Extraction</span></h4>
+              <div style="height: 220px;">
+                <canvas id="chart-region"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-card" style="margin-top:16px;">
+            <h4>🤖 Bot & Inorganic Activity Tracker <span id="demo-bot-count" style="color:#fb7185;">0 flagged</span></h4>
+            <p style="font-size:0.8rem; color:#9ca3af;">
+              Identifies coordinated inauthentic behavior, automated crypto spammers, and unnatural follower/following ratios across ingested channels.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tab 4: Trends & Topics -->
+        <div class="tab-content" id="tab-trends">
+          <div class="grid-2">
+            <div class="analytics-card">
+              <h4>Emerging TF-IDF Topic Clusters <span>Topic Model</span></h4>
+              <div id="top-topics-list" style="display:flex; flex-wrap:wrap; gap:6px; min-height:160px; align-content:flex-start;"></div>
+            </div>
+
+            <div class="analytics-card">
+              <h4>Hashtag Velocity Leaderboard <span>Velocity / Hr</span></h4>
+              <div class="hashtag-list" id="hashtag-leaderboard"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Real-Time Ingestion Feed Panel -->
+      <aside class="feed-panel">
+        <div class="feed-header">
+          <h3>
+            <span class="status-pulse"></span>
+            Live Ingestion Feed
+          </h3>
+          <div class="feed-controls">
+            <button id="btn-pause-feed" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer;">
+              ⏸ Pause
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Feed Container -->
+        <div class="feed-list" id="feed-stream">
+          <!-- Populated dynamically via WebSocket -->
+        </div>
+      </aside>
+
+    </section>
+
+  </main>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    Smart India Hackathon &bull; Multi-Source Social Media Intelligence Architecture &bull; FastAPI + WebSocket + NetworkX + NLP
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/js/network_graph.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
